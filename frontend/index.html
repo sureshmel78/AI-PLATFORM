@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+Enterprise Maritime AI Intelligence Platform
+</title>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+background:#081120;
+color:white;
+font-family:Arial,sans-serif;
+}
+
+header{
+background:#0f172a;
+padding:20px;
+border-bottom:1px solid #1e293b;
+}
+
+h1{
+margin:0;
+text-align:center;
+}
+
+.sub-title{
+text-align:center;
+margin-top:10px;
+color:#10b981;
+}
+
+.container{
+padding:20px;
+max-width:1450px;
+margin:auto;
+}
+
+.auth-box{
+max-width:400px;
+margin:80px auto;
+background:#111827;
+padding:30px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:20px;
+border-radius:6px;
+border:none;
+background:#1f2937;
+color:white;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:6px;
+background:#2563eb;
+color:white;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(220px,280px));
+gap:15px;
+margin-top:20px;
+}
+
+.card{
+background:#111827;
+border:1px solid #1e293b;
+border-radius:10px;
+padding:15px;
+}
+
+.section-title{
+margin-top:40px;
+margin-bottom:15px;
+font-size:24px;
+}
+
+.table-container{
+overflow-x:auto;
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#111827;
+}
+
+th{
+background:#1e293b;
+padding:14px;
+text-align:left;
+}
+
+td{
+padding:14px;
+border-top:1px solid #1f2937;
+}
+
+tr:hover{
+background:#172033;
+}
+
+.alert-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,350px));
+gap:15px;
+margin-top:20px;
+}
+
+.alert-card-medium{
+background:#3a2b10;
+border:1px solid #f59e0b;
+padding:20px;
+border-radius:10px;
+}
+
+.live-indicator{
+width:10px;
+height:10px;
+background:#10b981;
+display:inline-block;
+border-radius:50%;
+margin-right:8px;
+}
+
+.stream-panel{
+background:#111827;
+border:1px solid #1e293b;
+border-radius:10px;
+padding:20px;
+margin-top:20px;
+max-height:300px;
+overflow-y:auto;
+}
+
+.stream-item{
+padding:12px;
+margin-bottom:10px;
+background:#172033;
+border-left:4px solid #2563eb;
+}
+
+.stream-time{
+font-size:12px;
+color:#94a3b8;
+margin-bottom:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+Enterprise Maritime AI Intelligence Platform
+</h1>
+
+<div class="sub-title">
+<span class="live-indicator"></span>
+Live Operational Maritime Intelligence System
+</div>
+
+</header>
+
+<div class="container">
+
+<div
+id="authSection"
+class="auth-box"
+>
+
+<h2>
+Enterprise Login
+</h2>
+
+<input
+type="text"
+id="username"
+placeholder="Username"
+/>
+
+<input
+type="password"
+id="password"
+placeholder="Password"
+/>
+
+<button onclick="login()">
+Login
+</button>
+
+</div>
+
+<div
+id="dashboardSection"
+style="display:none;"
+>
+
+<h2>
+Operational Dashboard
+</h2>
+
+<div
+id="dashboardData"
+class="dashboard-grid"
+></div>
+
+<div class="section-title">
+Enterprise Intelligence Metrics
+</div>
+
+<div
+id="enterpriseMetrics"
+class="dashboard-grid"
+></div>
+
+<div class="section-title">
+Operational Alerts
+</div>
+
+<div
+id="operationalAlerts"
+class="alert-grid"
+></div>
+
+<div class="section-title">
+Live Intelligence Stream
+</div>
+
+<div
+id="liveStreamPanel"
+class="stream-panel"
+></div>
+
+<div class="section-title">
+Historical Intelligence Logs
+</div>
+
+<div
+id="historyLogs"
+class="stream-panel"
+></div>
+
+<div class="section-title">
+Enterprise Fleet Intelligence
+</div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Vessel</th>
+<th>Type</th>
+<th>Speed</th>
+<th>Destination</th>
+<th>ETA</th>
+<th>Provider</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="fleetTableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="./app.js"></script>
+
+</body>
+
+</html>
