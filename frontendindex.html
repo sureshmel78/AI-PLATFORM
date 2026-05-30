@@ -1,0 +1,36 @@
+<html>
+<body>
+
+<h2>Add Vessel</h2>
+
+<input id="vName" placeholder="Name">
+<input id="vDwt" placeholder="DWT">
+<input id="vLoc" placeholder="Location">
+
+<button onclick="addVessel()">Add Vessel</button>
+
+<h2>Add Cargo</h2>
+
+<input id="cCom" placeholder="Commodity">
+<input id="cLoad" placeholder="Load Port">
+<input id="cQty" placeholder="Qty">
+
+<button onclick="addCargo()">Add Cargo</button>
+
+<h2>AI Deals</h2>
+
+<table border="1">
+<tr>
+<th>Vessel</th>
+<th>Cargo</th>
+<th>Score</th>
+</tr>
+
+<tbody id="deals"></tbody>
+
+</table>
+
+<script src="app.js"></script>
+
+</body>
+</html>
