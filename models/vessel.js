@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-module.exports=mongoose.model("Vessel",new mongoose.Schema({
+module.exports=mongoose.model("vessel",new mongoose.Schema({
 name:String,
 size:Number,
 open:String,
