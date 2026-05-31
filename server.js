@@ -1,6 +1,9 @@
 const congestionEngine=
 require('./engine/congestionEngine');
 
+const executiveDashboard =
+require('./engine/executiveDashboard');
+
 require('dotenv').config();
 
 const express=require('express');
@@ -301,6 +304,63 @@ return res.json({
 
 success:true,
 data:intelligence
+
+});
+
+}
+catch(error){
+
+next(error);
+
+}
+
+});
+
+/*
+====================================================
+EXECUTIVE DASHBOARD
+====================================================
+*/
+
+app.get(
+'/api/intelligence/dashboard',
+authMiddleware.verifyToken,
+async(req,res,next)=>{
+
+try{
+
+const dashboard =
+
+await executiveDashboard
+.generateDashboard();
+
+await IntelligenceLog
+.create({
+
+category:
+'EXECUTIVE_DASHBOARD',
+
+severity:
+dashboard.overallStatus,
+
+source:
+'AI_ENGINE',
+
+message:
+`Executive dashboard generated with status ${dashboard.overallStatus}`,
+
+action:
+'DASHBOARD_ANALYSIS',
+
+metadata:
+dashboard
+
+});
+
+return res.json({
+
+success:true,
+data:dashboard
 
 });
 
