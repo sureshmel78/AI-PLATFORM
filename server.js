@@ -1,3 +1,6 @@
+const congestionEngine=
+require('./engine/congestionEngine');
+
 require('dotenv').config();
 
 const express=require('express');
@@ -253,6 +256,62 @@ data:history
 
 });
 
+/*
+====================================================
+CONGESTION INTELLIGENCE
+====================================================
+*/
+
+app.get(
+'/api/intelligence/congestion',
+authMiddleware.verifyToken,
+async(req,res,next)=>{
+
+try{
+
+const intelligence=
+
+await congestionEngine
+.generateCongestionIntelligence();
+
+await IntelligenceLog
+.create({
+
+category:
+'PORT_CONGESTION',
+
+severity:
+intelligence.portRisk.riskLevel,
+
+source:
+'AI_ENGINE',
+
+message:
+`${intelligence.port} congestion forecast: ${intelligence.congestionForecast.congestionLevel}`,
+
+action:
+'CONGESTION_ANALYSIS',
+
+metadata:
+intelligence
+
+});
+
+return res.json({
+
+success:true,
+data:intelligence
+
+});
+
+}
+catch(error){
+
+next(error);
+
+}
+
+});
 /*
 ====================================================
 ERROR
