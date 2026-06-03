@@ -4,6 +4,9 @@ require('./engine/congestionEngine');
 const executiveDashboard =
 require('./engine/executiveDashboard');
 
+const publicDashboard=
+require('./engine/publicDashboard');
+
 require('dotenv').config();
 
 const express=require('express');
@@ -372,6 +375,41 @@ next(error);
 }
 
 });
+
+/*
+====================================================
+PUBLIC DASHBOARD
+====================================================
+*/
+
+app.get(
+'/api/public/dashboard',
+async(req,res,next)=>{
+
+try{
+
+const dashboard =
+
+await publicDashboard
+.getDashboard();
+
+return res.json({
+
+success:true,
+data:dashboard
+
+});
+
+}
+catch(error){
+
+next(error);
+
+}
+
+});
+
+
 /*
 ====================================================
 ERROR

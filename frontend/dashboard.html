@@ -4,15 +4,19 @@
 <head>
 
 <title>
-Maritime AI Command Center
+Enterprise Maritime AI Command Center
 </title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f7fa;
+font-family:Arial,sans-serif;
+background:#f4f6f9;
 padding:20px;
+}
+
+h1{
+margin-bottom:20px;
 }
 
 .card{
@@ -23,13 +27,15 @@ border-radius:8px;
 box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-h1{
-margin-bottom:20px;
-}
-
 .metric{
 font-size:24px;
 font-weight:bold;
+margin-top:10px;
+}
+
+.timestamp{
+font-size:12px;
+color:gray;
 }
 
 </style>
@@ -43,141 +49,91 @@ Enterprise Maritime AI Command Center
 </h1>
 
 <div class="card">
+<h2>Overall Status</h2>
+<div id="overallStatus" class="metric">
+ACTIVE
+</div>
+</div>
 
-<h2>
-Overall Status
-</h2>
+<div class="card">
+<h2>Active Vessels</h2>
+<div id="activeVessels" class="metric">
+1
+</div>
+</div>
 
-<div
-id="overallStatus"
-class="metric">
+<div class="card">
+<h2>Market Sentiment</h2>
+<div id="marketSentiment" class="metric">
+BULLISH
+</div>
+</div>
+
+<div class="card">
+<h2>Weather Risk</h2>
+<div id="weatherRisk" class="metric">
+LOW
+</div>
+</div>
+
+<div class="card">
+<h2>Congestion Risk</h2>
+<div id="congestionRisk" class="metric">
+LOW
+</div>
+</div>
+
+<div class="card">
+<h2>Voyage Risk</h2>
+<div id="voyageRisk" class="metric">
+LOW
+</div>
+</div>
+
+<div class="card">
+<h2>Last Updated</h2>
+<div id="lastUpdated" class="timestamp">
 Loading...
 </div>
-
-</div>
-
-<div class="card">
-
-<h2>
-Active Vessels
-</h2>
-
-<div
-id="activeVessels"
-class="metric">
--
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>
-Market Sentiment
-</h2>
-
-<div
-id="marketSentiment"
-class="metric">
--
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>
-Weather Risk
-</h2>
-
-<div
-id="weatherRisk"
-class="metric">
--
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>
-Congestion Risk
-</h2>
-
-<div
-id="congestionRisk"
-class="metric">
--
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>
-Voyage Risk
-</h2>
-
-<div
-id="voyageRisk"
-class="metric">
--
-</div>
-
 </div>
 
 <script>
 
-async function loadDashboard(){
+async function loadHealth(){
+
+try{
 
 const response=
-await fetch(
-'/api/health'
-);
+await fetch('/api/health');
 
 const data=
 await response.json();
 
 document
-.getElementById(
-'overallStatus'
-)
+.getElementById('overallStatus')
 .innerText=
 data.system;
 
 document
-.getElementById(
-'activeVessels'
-)
-.innerText='1';
+.getElementById('lastUpdated')
+.innerText=
+data.timestamp;
 
-document
-.getElementById(
-'marketSentiment'
-)
-.innerText='BULLISH';
+}
+catch(error){
 
-document
-.getElementById(
-'weatherRisk'
-)
-.innerText='LOW';
-
-document
-.getElementById(
-'congestionRisk'
-)
-.innerText='LOW';
-
-document
-.getElementById(
-'voyageRisk'
-)
-.innerText='LOW';
+console.log(error);
 
 }
 
-loadDashboard();
+}
+
+loadHealth();
+
+setInterval(
+loadHealth,
+30000
+);
 
 </script>
 
