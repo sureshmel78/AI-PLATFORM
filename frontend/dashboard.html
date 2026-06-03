@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>
+Maritime AI Command Center
+</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fa;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin-bottom:15px;
+border-radius:8px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+.metric{
+font-size:24px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Enterprise Maritime AI Command Center
+</h1>
+
+<div class="card">
+
+<h2>
+Overall Status
+</h2>
+
+<div
+id="overallStatus"
+class="metric">
+Loading...
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Active Vessels
+</h2>
+
+<div
+id="activeVessels"
+class="metric">
+-
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Market Sentiment
+</h2>
+
+<div
+id="marketSentiment"
+class="metric">
+-
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Weather Risk
+</h2>
+
+<div
+id="weatherRisk"
+class="metric">
+-
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Congestion Risk
+</h2>
+
+<div
+id="congestionRisk"
+class="metric">
+-
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Voyage Risk
+</h2>
+
+<div
+id="voyageRisk"
+class="metric">
+-
+</div>
+
+</div>
+
+<script>
+
+async function loadDashboard(){
+
+const response=
+await fetch(
+'/api/health'
+);
+
+const data=
+await response.json();
+
+document
+.getElementById(
+'overallStatus'
+)
+.innerText=
+data.system;
+
+document
+.getElementById(
+'activeVessels'
+)
+.innerText='1';
+
+document
+.getElementById(
+'marketSentiment'
+)
+.innerText='BULLISH';
+
+document
+.getElementById(
+'weatherRisk'
+)
+.innerText='LOW';
+
+document
+.getElementById(
+'congestionRisk'
+)
+.innerText='LOW';
+
+document
+.getElementById(
+'voyageRisk'
+)
+.innerText='LOW';
+
+}
+
+loadDashboard();
+
+</script>
+
+</body>
+
+</html>
