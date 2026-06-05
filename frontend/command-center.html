@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Maritime AI Intelligence Platform</title>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#0f172a;
+color:white;
+padding:20px;
+}
+
+.header{
+background:#111827;
+padding:25px;
+border-radius:12px;
+margin-bottom:20px;
+border:1px solid #1f2937;
+}
+
+.header h1{
+font-size:32px;
+}
+
+.header p{
+color:#94a3b8;
+margin-top:8px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+border:1px solid #334155;
+}
+
+.card h3{
+font-size:14px;
+color:#94a3b8;
+margin-bottom:10px;
+}
+
+.metric{
+font-size:32px;
+font-weight:bold;
+}
+
+.green{
+color:#22c55e;
+}
+
+.amber{
+color:#f59e0b;
+}
+
+.red{
+color:#ef4444;
+}
+
+.section{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+border:1px solid #334155;
+margin-bottom:20px;
+}
+
+.section h2{
+margin-bottom:15px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+border-bottom:1px solid #334155;
+}
+
+.row:last-child{
+border-bottom:none;
+}
+
+.alert{
+padding:12px;
+margin-bottom:10px;
+background:#0f172a;
+border-left:4px solid #22c55e;
+border-radius:6px;
+}
+
+.chart-box{
+height:250px;
+display:flex;
+align-items:flex-end;
+justify-content:space-between;
+padding:15px;
+}
+
+.bar{
+width:12%;
+background:#3b82f6;
+border-radius:6px 6px 0 0;
+}
+
+.footer{
+margin-top:20px;
+color:#94a3b8;
+font-size:12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>
+Maritime AI Intelligence Platform
+</h1>
+
+<p>
+Executive Control Tower
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h3>Overall Status</h3>
+<div id="overallStatus"
+class="metric green">
+-
+</div>
+</div>
+
+<div class="card">
+<h3>Active Vessels</h3>
+<div id="activeVessels"
+class="metric">
+-
+</div>
+</div>
+
+<div class="card">
+<h3>Market Sentiment</h3>
+<div id="marketSentiment"
+class="metric">
+-
+</div>
+</div>
+
+<div class="card">
+<h3>Weather Risk</h3>
+<div id="weatherRisk"
+class="metric">
+-
+</div>
+</div>
+
+<div class="card">
+<h3>Congestion Risk</h3>
+<div id="congestionRisk"
+class="metric">
+-
+</div>
+</div>
+
+<div class="card">
+<h3>Voyage Risk</h3>
+<div id="voyageRisk"
+class="metric">
+-
+</div>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>
+Vessel Intelligence
+</h2>
+
+<div class="row">
+<span>Vessel</span>
+<span id="vesselName">-</span>
+</div>
+
+<div class="row">
+<span>ETA</span>
+<span id="eta">-</span>
+</div>
+
+<div class="row">
+<span>Distance Remaining</span>
+<span id="distance">-</span>
+</div>
+
+<div class="row">
+<span>Fuel Risk</span>
+<span id="fuelRisk">-</span>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>
+Port Intelligence
+</h2>
+
+<div class="row">
+<span>Port</span>
+<span id="portName">-</span>
+</div>
+
+<div class="row">
+<span>Congestion Level</span>
+<span id="congestionLevel">-</span>
+</div>
+
+<div class="row">
+<span>Predicted Delay</span>
+<span id="delayHours">-</span>
+</div>
+
+<div class="row">
+<span>Active Vessels</span>
+<span id="portVessels">-</span>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>
+Executive Alerts
+</h2>
+
+<div class="alert">
+Freight market strengthening
+</div>
+
+<div class="alert">
+Weather conditions stable
+</div>
+
+<div class="alert">
+No major congestion detected
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>
+Traffic Trend</h2>
+
+<div class="chart-box">
+
+<div class="bar"
+style="height:80px"></div>
+
+<div class="bar"
+style="height:140px"></div>
+
+<div class="bar"
+style="height:110px"></div>
+
+<div class="bar"
+style="height:170px"></div>
+
+<div class="bar"
+style="height:210px"></div>
+
+<div class="bar"
+style="height:180px"></div>
+
+<div class="bar"
+style="height:220px"></div>
+
+</div>
+
+</div>
+
+<div class="footer">
+
+Last Updated :
+<span id="lastUpdated">-</span>
+
+</div>
+
+<script>
+
+function riskClass(value){
+
+if(value==='HIGH'){
+return 'red';
+}
+
+if(value==='MEDIUM'){
+return 'amber';
+}
+
+return 'green';
+
+}
+
+async function loadDashboard(){
+
+try{
+
+const response=
+await fetch(
+'/api/public/dashboard'
+);
+
+const result=
+await response.json();
+
+const data=
+result.data;
+
+document.getElementById(
+'overallStatus'
+).innerText=
+data.overallStatus;
+
+document.getElementById(
+'activeVessels'
+).innerText=
+data.executiveSummary.activeVessels;
+
+document.getElementById(
+'marketSentiment'
+).innerText=
+data.executiveSummary.marketSentiment;
+
+document.getElementById(
+'weatherRisk'
+).innerText=
+data.executiveSummary.weatherRisk;
+
+document.getElementById(
+'congestionRisk'
+).innerText=
+data.executiveSummary.congestionRisk;
+
+document.getElementById(
+'voyageRisk'
+).innerText=
+data.executiveSummary.voyageRisk;
+
+document.getElementById(
+'vesselName'
+).innerText=
+data.vesselRisk.vessel;
+
+document.getElementById(
+'eta'
+).innerText=
+data.vesselRisk.etaAnalysis.eta;
+
+document.getElementById(
+'distance'
+).innerText=
+data.vesselRisk.etaAnalysis.distanceRemainingNm + ' NM';
+
+document.getElementById(
+'fuelRisk'
+).innerText=
+data.vesselRisk.fuelAnalysis.riskLevel;
+
+document.getElementById(
+'portName'
+).innerText=
+data.congestionIntelligence.port;
+
+document.getElementById(
+'congestionLevel'
+).innerText=
+data.congestionIntelligence.congestionForecast.congestionLevel;
+
+document.getElementById(
+'delayHours'
+).innerText=
+data.congestionIntelligence.congestionForecast.predictedDelayHours + ' hrs';
+
+document.getElementById(
+'portVessels'
+).innerText=
+data.congestionIntelligence.activeVessels;
+
+document.getElementById(
+'weatherRisk'
+).className=
+'metric ' +
+riskClass(
+data.executiveSummary.weatherRisk
+);
+
+document.getElementById(
+'congestionRisk'
+).className=
+'metric ' +
+riskClass(
+data.executiveSummary.congestionRisk
+);
+
+document.getElementById(
+'voyageRisk'
+).className=
+'metric ' +
+riskClass(
+data.executiveSummary.voyageRisk
+);
+
+document.getElementById(
+'lastUpdated'
+).innerText=
+new Date()
+.toLocaleString();
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+loadDashboard();
+
+setInterval(
+loadDashboard,
+30000
+);
+
+</script>
+
+</body>
+
+</html>

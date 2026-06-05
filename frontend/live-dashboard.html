@@ -3,18 +3,27 @@
 
 <head>
 
-<title>Maritime AI Live Dashboard</title>
+<title>Enterprise Maritime AI Command Center</title>
 
 <style>
 
 body{
 font-family:Arial,sans-serif;
-background:#f4f6f9;
+background:#eef2f7;
+margin:0;
 padding:20px;
 }
 
-h1{
+.header{
+background:#0f172a;
+color:white;
+padding:20px;
+border-radius:10px;
 margin-bottom:20px;
+}
+
+.header h1{
+margin:0;
 }
 
 .grid{
@@ -26,8 +35,13 @@ gap:15px;
 .card{
 background:white;
 padding:20px;
-border-radius:8px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card h3{
+margin-top:0;
+color:#334155;
 }
 
 .value{
@@ -36,10 +50,35 @@ font-weight:bold;
 margin-top:10px;
 }
 
-.timestamp{
+.green{
+color:green;
+}
+
+.amber{
+color:orange;
+}
+
+.red{
+color:red;
+}
+
+.alerts{
+margin-top:20px;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.alert-item{
+padding:8px 0;
+border-bottom:1px solid #e5e7eb;
+}
+
+.footer{
 margin-top:20px;
 font-size:12px;
-color:gray;
+color:#64748b;
 }
 
 </style>
@@ -48,7 +87,17 @@ color:gray;
 
 <body>
 
-<h1>Enterprise Maritime AI Command Center</h1>
+<div class="header">
+
+<h1>
+Enterprise Maritime AI Command Center
+</h1>
+
+<div>
+VOC Port | Executive Intelligence Dashboard
+</div>
+
+</div>
 
 <div class="grid">
 
@@ -84,12 +133,72 @@ color:gray;
 
 </div>
 
-<div class="timestamp">
-Last Updated:
+<div class="alerts">
+
+<h2>
+Executive Alerts
+</h2>
+
+<div class="alert-item">
+VOC Port congestion monitoring active
+</div>
+
+<div class="alert-item">
+Freight market sentiment under review
+</div>
+
+<div class="alert-item">
+Weather conditions continuously monitored
+</div>
+
+</div>
+
+<div class="alerts">
+
+<h2>
+VOC Port Intelligence
+</h2>
+
+<div class="alert-item">
+Anchorage Queue : <span id="activeVessels2">-</span>
+</div>
+
+<div class="alert-item">
+Congestion Level : <span id="congestionLevel">-</span>
+</div>
+
+<div class="alert-item">
+Voyage Risk : <span id="voyageRisk2">-</span>
+</div>
+
+<div class="alert-item">
+Market Sentiment : <span id="marketSentiment2">-</span>
+</div>
+
+</div>
+
+<div class="footer">
+
+Last Updated :
 <span id="lastUpdated">-</span>
+
 </div>
 
 <script>
+
+function riskClass(value){
+
+if(value==='HIGH'){
+return 'red';
+}
+
+if(value==='MEDIUM'){
+return 'amber';
+}
+
+return 'green';
+
+}
 
 async function loadDashboard(){
 
@@ -137,9 +246,54 @@ document.getElementById(
 data.executiveSummary.voyageRisk;
 
 document.getElementById(
+'activeVessels2'
+).innerText=
+data.executiveSummary.activeVessels;
+
+document.getElementById(
+'congestionLevel'
+).innerText=
+data.congestionIntelligence.congestionForecast.congestionLevel;
+
+document.getElementById(
+'voyageRisk2'
+).innerText=
+data.executiveSummary.voyageRisk;
+
+document.getElementById(
+'marketSentiment2'
+).innerText=
+data.executiveSummary.marketSentiment;
+
+document.getElementById(
+'weatherRisk'
+).className=
+'value ' +
+riskClass(
+data.executiveSummary.weatherRisk
+);
+
+document.getElementById(
+'congestionRisk'
+).className=
+'value ' +
+riskClass(
+data.executiveSummary.congestionRisk
+);
+
+document.getElementById(
+'voyageRisk'
+).className=
+'value ' +
+riskClass(
+data.executiveSummary.voyageRisk
+);
+
+document.getElementById(
 'lastUpdated'
 ).innerText=
-new Date().toLocaleString();
+new Date()
+.toLocaleString();
 
 }
 catch(error){
