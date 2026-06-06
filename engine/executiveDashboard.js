@@ -7,6 +7,9 @@ require('./congestionEngine');
 const vesselRiskEngine =
 require('./vesselRiskEngine');
 
+const businessIntelligenceEngine =
+require('./businessIntelligenceEngine');
+
 class ExecutiveDashboard {
 
 async generateDashboard(){
@@ -29,6 +32,11 @@ const vesselRisk =
 
 vesselRiskEngine
 .generateRiskAssessment();
+
+const businessIntelligence =
+
+businessIntelligenceEngine
+.generateBusinessIntelligence();
 
 let overallStatus =
 'GREEN';
@@ -102,13 +110,35 @@ congestionIntelligence
 voyageRisk:
 vesselRisk
 .voyageRisk
-.overallRisk
+.overallRisk,
+
+revenueOpportunityCrores:
+businessIntelligence
+.executiveSummary
+.revenueOpportunityCrores,
+
+additionalCalls:
+businessIntelligence
+.executiveSummary
+.additionalCalls,
+
+transshipmentPotential:
+businessIntelligence
+.executiveSummary
+.transshipmentPotential,
+
+highestRiskPort:
+businessIntelligence
+.executiveSummary
+.highestRiskPort
 
 },
 
 congestionIntelligence,
 
 vesselRisk,
+
+businessIntelligence,
 
 generatedAt:
 new Date()

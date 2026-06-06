@@ -256,9 +256,65 @@ Port Intelligence
 </div>
 
 </div>
-
 <div class="section">
 
+<h2>
+Business Intelligence
+</h2>
+
+<div class="row">
+<span>Revenue Opportunity</span>
+<span id="revenueOpportunity">-</span>
+</div>
+
+<div class="row">
+<span>Additional Calls</span>
+<span id="additionalCalls">-</span>
+</div>
+
+<div class="row">
+<span>Transshipment Potential</span>
+<span id="transshipmentPotential">-</span>
+</div>
+
+<div class="row">
+<span>Highest Risk Port</span>
+<span id="highestRiskPort">-</span>
+</div>
+
+</div>
+<div class="section">
+<div class="section">
+
+<h2>
+Competitor Port Intelligence
+</h2>
+
+<div class="row">
+<span>VOC PORT</span>
+<span id="vocPort">-</span>
+</div>
+
+<div class="row">
+<span>CHENNAI</span>
+<span id="chennaiPort">-</span>
+</div>
+
+<div class="row">
+<span>COCHIN</span>
+<span id="cochinPort">-</span>
+</div>
+
+<div class="row">
+<span>COLOMBO</span>
+<span id="colomboPort">-</span>
+</div>
+
+<div class="row">
+<span>VIZHINJAM</span>
+<span id="vizhinjamPort">-</span>
+</div>
+</div>
 <h2>
 Executive Alerts
 </h2>
@@ -416,7 +472,56 @@ document.getElementById(
 'portVessels'
 ).innerText=
 data.congestionIntelligence.activeVessels;
+const ports =
+data.businessIntelligence
+.portComparison
+.ports;
 
+document.getElementById(
+'vocPort'
+).innerText =
+`${ports[0].risk} | ${ports[0].delayHours} hrs`;
+
+document.getElementById(
+'chennaiPort'
+).innerText =
+`${ports[1].risk} | ${ports[1].delayHours} hrs`;
+
+document.getElementById(
+'cochinPort'
+).innerText =
+`${ports[2].risk} | ${ports[2].delayHours} hrs`;
+
+document.getElementById(
+'colomboPort'
+).innerText =
+`${ports[3].risk} | ${ports[3].delayHours} hrs`;
+
+document.getElementById(
+'vizhinjamPort'
+).innerText =
+`${ports[4].risk} | ${ports[4].delayHours} hrs`;
+document.getElementById(
+'revenueOpportunity'
+).innerText=
+'₹ ' +
+data.executiveSummary.revenueOpportunityCrores +
+' Cr';
+
+document.getElementById(
+'additionalCalls'
+).innerText=
+data.executiveSummary.additionalCalls;
+
+document.getElementById(
+'transshipmentPotential'
+).innerText=
+data.executiveSummary.transshipmentPotential;
+
+document.getElementById(
+'highestRiskPort'
+).innerText=
+data.executiveSummary.highestRiskPort;
 document.getElementById(
 'weatherRisk'
 ).className=
