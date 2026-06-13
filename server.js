@@ -1,3 +1,4 @@
+require('dotenv').config();
 const congestionEngine=
 require('./engine/congestionEngine');
 
@@ -6,8 +7,6 @@ require('./engine/executiveDashboard');
 
 const publicDashboard=
 require('./engine/publicDashboard');
-
-require('dotenv').config();
 
 const express=require('express');
 const cors=require('cors');
