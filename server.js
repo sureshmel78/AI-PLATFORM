@@ -8,6 +8,8 @@ require('./engine/executiveDashboard');
 const publicDashboard=
 require('./engine/publicDashboard');
 
+const aisCacheService =
+require('./services/aisCacheService');
 const express=require('express');
 const cors=require('cors');
 const http=require('http');
@@ -438,6 +440,9 @@ message:error.message
 SERVER
 ====================================================
 */
+
+
+aisCacheService.start();
 
 server.listen(
 PORT,
