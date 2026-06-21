@@ -41,17 +41,22 @@ class AISCacheService {
         });
 
         this.socket.on('message', (data) => {
+	console.log('AIS MESSAGE ARRIVED');
+            console.log(
+                'RAW AIS MESSAGE:',
+                data.toString().substring(0, 2000)
+            );
 
             try {
 
                 const message =
                     JSON.parse(data.toString());
 
-                if (
-                    message.MetaData &&
-                    message.MetaData.latitude &&
-                    message.MetaData.longitude
-                ) {
+                console.log(
+                    'RECEIVED AIS MESSAGE'
+                );
+
+                if (message.MetaData) {
 
                     console.log(
                         'AIS CACHE UPDATED:',
@@ -63,11 +68,21 @@ class AISCacheService {
                             name: message.MetaData.ShipName
                                 ? message.MetaData.ShipName.trim()
                                 : 'UNKNOWN',
-                            mmsi: message.MetaData.MMSI,
-                            latitude: message.MetaData.latitude,
-                            longitude: message.MetaData.longitude,
-                            provider: 'AISSTREAM',
-                            navigationStatus: 'LIVE'
+
+                            mmsi:
+                                message.MetaData.MMSI,
+
+                            latitude:
+                                message.MetaData.latitude,
+
+                            longitude:
+                                message.MetaData.longitude,
+
+                            provider:
+                                'AISSTREAM',
+
+                            navigationStatus:
+                                'LIVE'
                         }
                     ];
 
@@ -105,11 +120,16 @@ class AISCacheService {
 
     }
 
-    getVessels() {
+   getVessels() {
 
-        return this.vessels;
+    console.log(
+        'CACHE CONTENT:',
+        JSON.stringify(this.vessels, null, 2)
+    );
 
-    }
+    return this.vessels;
+
+}
 
 }
 

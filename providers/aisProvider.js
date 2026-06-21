@@ -3,71 +3,80 @@ require('../services/aisCacheService');
 
 class AISProvider {
 
-constructor(){
+    constructor() {
 
-this.provider =
-'AISSTREAM';
+        this.provider =
+        'AISSTREAM';
 
-}
+    }
 
-/*
-====================================================
-LIVE VESSELS
-====================================================
-*/
+    /*
+    ====================================================
+    LIVE VESSELS
+    ====================================================
+    */
 
-async getLiveVessels(){
+    async getLiveVessels() {
 
-const vessels =
-aisCacheService.getVessels();
+        const vessels =
+        aisCacheService.getVessels();
 
-if(
-vessels &&
-vessels.length > 0
-){
+        console.log(
+            'AIS PROVIDER VESSELS:',
+            JSON.stringify(vessels, null, 2)
+        );
 
-return vessels;
+        if (
+            vessels &&
+            vessels.length > 0
+        ) {
 
-}
+            return vessels;
 
-return this.getFallbackData();
+        }
 
-}
+        console.log(
+            'AIS PROVIDER USING FALLBACK'
+        );
 
-/*
-====================================================
-FALLBACK
-====================================================
-*/
+        return this.getFallbackData();
 
-getFallbackData(){
+    }
 
-return [
+    /*
+    ====================================================
+    FALLBACK
+    ====================================================
+    */
 
-{
+    getFallbackData() {
 
-name:'MSC MARINA',
+        return [
 
-vesselType:'Container',
+            {
 
-speed:15.2,
+                name: 'MSC MARINA',
 
-destination:'Singapore',
+                vesselType: 'Container',
 
-eta:
-new Date(
-Date.now()+42*60*60*1000
-).toISOString(),
+                speed: 15.2,
 
-navigationStatus:'FALLBACK',
+                destination: 'Singapore',
 
-provider:'LOCAL'
+                eta:
+                new Date(
+                    Date.now() + 42 * 60 * 60 * 1000
+                ).toISOString(),
 
-}
+                navigationStatus: 'FALLBACK',
 
-];
+                provider: 'LOCAL'
 
-}
+            }
+
+        ];
+
+    }
 
 }
 

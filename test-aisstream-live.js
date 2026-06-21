@@ -1,69 +1,68 @@
 require('dotenv').config();
 
-const WebSocket =
-require('ws');
+const WebSocket = require('ws');
 
-const socket =
-new WebSocket(
-'wss://stream.aisstream.io/v0/stream'
+const socket = new WebSocket(
+    'wss://stream.aisstream.io/v0/stream'
 );
 
 socket.on('open', () => {
 
-console.log(
-'CONNECTED TO AISSTREAM'
-);
+    console.log(
+        'CONNECTED TO AISSTREAM'
+    );
 
-const subscriptionMessage = {
+    const subscriptionMessage = {
 
-APIKey:
-process.env.AIS_API_KEY,
+        APIKey:
+            process.env.AIS_API_KEY,
 
-BoundingBoxes: [[
+        BoundingBoxes: [[
 
-[5.0,60.0],
-[35.0,100.0]
+            [5.0, 60.0],
+            [35.0, 100.0]
 
-]]
+        ]]
 
-};
+    };
 
-socket.send(
-JSON.stringify(
-subscriptionMessage
-)
-);
+    socket.send(
+        JSON.stringify(
+            subscriptionMessage
+        )
+    );
 
-console.log(
-'SUBSCRIPTION SENT'
-);
+    console.log(
+        'SUBSCRIPTION SENT'
+    );
 
 });
 
 socket.on('message', data => {
 
-const message =
-JSON.parse(
-data.toString()
-);
+    console.log(
+        'MESSAGE RECEIVED'
+    );
 
-console.log(
-JSON.stringify(
-message,
-null,
-2
-)
-);
-
-process.exit();
+    console.log(
+        data.toString()
+    );
 
 });
 
 socket.on('error', error => {
 
-console.log(
-'ERROR:',
-error.message
-);
+    console.log(
+        'ERROR:',
+        error.message
+    );
+
+});
+
+socket.on('close', () => {
+
+    console.log(
+        'CONNECTION CLOSED'
+    );
 
 });
