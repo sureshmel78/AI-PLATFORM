@@ -2,7 +2,7 @@
 ===============================================================
 Enterprise Maritime AI Intelligence Platform
 Vessel Risk Engine
-Version : 2.0.1
+Version : 2.1.0
 ===============================================================
 */
 
@@ -132,6 +132,203 @@ class VesselRiskEngine {
                 0
 
             }
+
+        );
+
+    }
+
+
+    /*
+    ===========================================================
+    Planned Route Intelligence
+    ===========================================================
+    */
+
+    getPlannedRoute(destinationName) {
+
+        const routes = {
+
+            TUTICORIN: [
+
+                {
+                    lat:
+                    7.5000,
+
+                    lon:
+                    77.9000
+                },
+
+                {
+                    lat:
+                    8.0000,
+
+                    lon:
+                    78.0000
+                },
+
+                {
+                    lat:
+                    8.5000,
+
+                    lon:
+                    78.1000
+                },
+
+                {
+                    lat:
+                    8.7642,
+
+                    lon:
+                    78.1348
+                }
+
+            ],
+
+
+            SINGAPORE: [
+
+                {
+                    lat:
+                    5.5000,
+
+                    lon:
+                    95.0000
+                },
+
+                {
+                    lat:
+                    3.5000,
+
+                    lon:
+                    99.0000
+                },
+
+                {
+                    lat:
+                    2.0000,
+
+                    lon:
+                    102.0000
+                },
+
+                {
+                    lat:
+                    1.290270,
+
+                    lon:
+                    103.851959
+                }
+
+            ],
+
+
+            COLOMBO: [
+
+                {
+                    lat:
+                    8.0000,
+
+                    lon:
+                    78.5000
+                },
+
+                {
+                    lat:
+                    7.5000,
+
+                    lon:
+                    79.0000
+                },
+
+                {
+                    lat:
+                    6.9271,
+
+                    lon:
+                    79.8612
+                }
+
+            ],
+
+
+            SHANGHAI: [
+
+                {
+                    lat:
+                    25.0000,
+
+                    lon:
+                    120.0000
+                },
+
+                {
+                    lat:
+                    28.0000,
+
+                    lon:
+                    121.0000
+                },
+
+                {
+                    lat:
+                    31.2304,
+
+                    lon:
+                    121.4737
+                }
+
+            ],
+
+
+            'JEBEL ALI': [
+
+                {
+                    lat:
+                    22.0000,
+
+                    lon:
+                    60.0000
+                },
+
+                {
+                    lat:
+                    24.0000,
+
+                    lon:
+                    57.0000
+                },
+
+                {
+                    lat:
+                    25.0118,
+
+                    lon:
+                    55.0615
+                }
+
+            ]
+
+        };
+
+
+        const normalizedDestination =
+
+        String(
+            destinationName || ''
+        )
+        .trim()
+        .toUpperCase();
+
+
+        return (
+
+            routes[
+                normalizedDestination
+            ]
+
+            ||
+
+            []
 
         );
 
@@ -271,6 +468,22 @@ class VesselRiskEngine {
 
         /*
         =======================================================
+        Planned Route Intelligence
+        =======================================================
+        */
+
+        const plannedRoute =
+
+        this
+        .getPlannedRoute(
+
+            liveVessel.destination
+
+        );
+
+
+        /*
+        =======================================================
         Weather Intelligence Input
         =======================================================
         */
@@ -341,6 +554,58 @@ class VesselRiskEngine {
 
         /*
         =======================================================
+        Route Deviation Intelligence
+        =======================================================
+        */
+
+        let routeAnalysis = {
+
+            vessel:
+            vessel.name,
+
+            deviationDistanceNm:
+            0,
+
+            deviated:
+            false,
+
+            severity:
+            'LOW',
+
+            status:
+            'ROUTE_NOT_AVAILABLE'
+
+        };
+
+
+        if (
+
+            Array.isArray(
+                plannedRoute
+            )
+
+            &&
+
+            plannedRoute.length > 0
+
+        ) {
+
+            routeAnalysis =
+
+            vesselIntelligence
+            .detectRouteDeviation(
+
+                vessel,
+
+                plannedRoute
+
+            );
+
+        }
+
+
+        /*
+        =======================================================
         Voyage Risk Intelligence
         =======================================================
         */
@@ -369,7 +634,8 @@ class VesselRiskEngine {
 
             routeDeviation:
 
-            false
+            routeAnalysis
+            .deviated === true
 
         });
 
@@ -394,6 +660,15 @@ class VesselRiskEngine {
             'FUEL:',
 
             fuelAnalysis
+
+        );
+
+
+        console.log(
+
+            'ROUTE:',
+
+            routeAnalysis
 
         );
 
@@ -438,6 +713,9 @@ class VesselRiskEngine {
 
 
             fuelAnalysis,
+
+
+            routeAnalysis,
 
 
             voyageRisk,
