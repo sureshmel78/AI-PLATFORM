@@ -1,3 +1,11 @@
+/*
+===============================================================
+Enterprise Maritime AI Intelligence Platform
+Executive Dashboard Engine
+Version : 2.0.1
+===============================================================
+*/
+
 const gateway =
 require('../feeds/gateway');
 
@@ -10,145 +18,257 @@ require('./vesselRiskEngine');
 const businessIntelligenceEngine =
 require('./businessIntelligenceEngine');
 
+
 class ExecutiveDashboard {
 
-async generateDashboard(){
+    /*
+    ===============================================================
+    Generate Executive Dashboard
+    ===============================================================
+    */
 
-const [
+    async generateDashboard() {
 
-enterpriseFeeds,
-congestionIntelligence
+        const [
 
-] = await Promise.all([
+            enterpriseFeeds,
 
-gateway.getEnterpriseFeeds(),
+            congestionIntelligence
 
-congestionEngine
-.generateCongestionIntelligence()
+        ] = await Promise.all([
 
-]);
+            gateway
+            .getEnterpriseFeeds(),
 
-const vesselRisk =
+            congestionEngine
+            .generateCongestionIntelligence()
 
-vesselRiskEngine
-.generateRiskAssessment();
+        ]);
 
-const businessIntelligence =
 
-businessIntelligenceEngine
-.generateBusinessIntelligence();
+        /*
+        ===============================================================
+        Vessel Risk Intelligence
+        ===============================================================
+        */
 
-let overallStatus =
-'GREEN';
+        const vesselRisk =
 
-if(
+        await vesselRiskEngine
+        .generateRiskAssessment();
 
-congestionIntelligence
-.portRisk
-.riskLevel === 'HIGH'
 
-||
+        /*
+        ===============================================================
+        Business Intelligence
+        ===============================================================
+        */
 
-vesselRisk
-.voyageRisk
-.overallRisk === 'HIGH'
+        const businessIntelligence =
 
-){
+        businessIntelligenceEngine
+        .generateBusinessIntelligence();
 
-overallStatus =
-'RED';
+
+        /*
+        ===============================================================
+        Safe Enterprise Feed Intelligence
+        ===============================================================
+        */
+
+        const aisFeed =
+
+        enterpriseFeeds
+        .ais || {};
+
+
+        const freightFeed =
+
+        enterpriseFeeds
+        .freight || {};
+
+
+        const weatherFeed =
+
+        enterpriseFeeds
+        .weather || {};
+
+
+        /*
+        ===============================================================
+        Market Sentiment
+        ===============================================================
+        */
+
+        const marketSentiment =
+
+        freightFeed
+        .sentiment ||
+
+        'STABLE';
+
+
+        /*
+        ===============================================================
+        Weather Risk
+        ===============================================================
+        */
+
+        const weatherRisk =
+
+        weatherFeed
+        .risk ||
+
+        'LOW';
+
+
+        /*
+        ===============================================================
+        Overall Platform Status
+        ===============================================================
+        */
+
+        let overallStatus =
+
+        'GREEN';
+
+
+        if (
+
+            congestionIntelligence
+            .portRisk
+            .riskLevel === 'HIGH'
+
+            ||
+
+            vesselRisk
+            .voyageRisk
+            .overallRisk === 'HIGH'
+
+        ) {
+
+            overallStatus =
+
+            'RED';
+
+        }
+
+        else if (
+
+            congestionIntelligence
+            .portRisk
+            .riskLevel === 'MEDIUM'
+
+            ||
+
+            vesselRisk
+            .voyageRisk
+            .overallRisk === 'MEDIUM'
+
+        ) {
+
+            overallStatus =
+
+            'AMBER';
+
+        }
+
+
+        /*
+        ===============================================================
+        Executive Dashboard Response
+        ===============================================================
+        */
+
+        return {
+
+            platform:
+
+            'Enterprise Maritime AI Intelligence Platform',
+
+
+            overallStatus,
+
+
+            executiveSummary: {
+
+                activeVessels:
+
+                aisFeed
+                .activeVessels || 0,
+
+
+                marketSentiment,
+
+
+                weatherRisk,
+
+
+                congestionRisk:
+
+                congestionIntelligence
+                .portRisk
+                .riskLevel,
+
+
+                voyageRisk:
+
+                vesselRisk
+                .voyageRisk
+                .overallRisk,
+
+
+                revenueOpportunityCrores:
+
+                businessIntelligence
+                .executiveSummary
+                .revenueOpportunityCrores,
+
+
+                additionalCalls:
+
+                businessIntelligence
+                .executiveSummary
+                .additionalCalls,
+
+
+                transshipmentPotential:
+
+                businessIntelligence
+                .executiveSummary
+                .transshipmentPotential,
+
+
+                highestRiskPort:
+
+                businessIntelligence
+                .executiveSummary
+                .highestRiskPort
+
+            },
+
+
+            congestionIntelligence,
+
+
+            vesselRisk,
+
+
+            businessIntelligence,
+
+
+            generatedAt:
+
+            new Date()
+            .toISOString()
+
+        };
+
+    }
 
 }
-else if(
 
-congestionIntelligence
-.portRisk
-.riskLevel === 'MEDIUM'
-
-||
-
-vesselRisk
-.voyageRisk
-.overallRisk === 'MEDIUM'
-
-){
-
-overallStatus =
-'AMBER';
-
-}
-
-return {
-
-platform:
-'Enterprise Maritime AI Intelligence Platform',
-
-overallStatus,
-
-executiveSummary:{
-
-activeVessels:
-enterpriseFeeds
-.ais
-.activeVessels,
-
-marketSentiment:
-enterpriseFeeds
-.freight
-.sentiment,
-
-weatherRisk:
-enterpriseFeeds
-.weather
-.risk,
-
-congestionRisk:
-congestionIntelligence
-.portRisk
-.riskLevel,
-
-voyageRisk:
-vesselRisk
-.voyageRisk
-.overallRisk,
-
-revenueOpportunityCrores:
-businessIntelligence
-.executiveSummary
-.revenueOpportunityCrores,
-
-additionalCalls:
-businessIntelligence
-.executiveSummary
-.additionalCalls,
-
-transshipmentPotential:
-businessIntelligence
-.executiveSummary
-.transshipmentPotential,
-
-highestRiskPort:
-businessIntelligence
-.executiveSummary
-.highestRiskPort
-
-},
-
-congestionIntelligence,
-
-vesselRisk,
-
-businessIntelligence,
-
-generatedAt:
-new Date()
-.toISOString()
-
-};
-
-}
-
-}
 
 module.exports =
+
 new ExecutiveDashboard();
