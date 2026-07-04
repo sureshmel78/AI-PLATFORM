@@ -2,7 +2,7 @@
 ===============================================================
 Enterprise Maritime AI Intelligence Platform
 Vessel Risk Engine
-Version : 2.1.0
+Version : 2.2.0
 ===============================================================
 */
 
@@ -337,11 +337,54 @@ class VesselRiskEngine {
 
     /*
     ===========================================================
+    Normalize Congestion Risk
+    ===========================================================
+    */
+
+    normalizeCongestionRisk(congestionRisk) {
+
+        const normalizedRisk =
+
+        String(
+            congestionRisk || ''
+        )
+        .trim()
+        .toUpperCase();
+
+
+        if (
+
+            normalizedRisk === 'HIGH'
+
+            ||
+
+            normalizedRisk === 'MEDIUM'
+
+            ||
+
+            normalizedRisk === 'LOW'
+
+        ) {
+
+            return normalizedRisk;
+
+        }
+
+
+        return 'LOW';
+
+    }
+
+
+    /*
+    ===========================================================
     Generate Vessel Risk Assessment
     ===========================================================
     */
 
-    async generateRiskAssessment() {
+    async generateRiskAssessment(
+        congestionRisk = 'LOW'
+    ) {
 
         const vessels =
 
@@ -368,12 +411,6 @@ class VesselRiskEngine {
         }
 
 
-        /*
-        =======================================================
-        Live AIS Vessel
-        =======================================================
-        */
-
         const liveVessel =
 
         vessels[0];
@@ -395,12 +432,6 @@ class VesselRiskEngine {
 
         );
 
-
-        /*
-        =======================================================
-        Vessel Intelligence Input
-        =======================================================
-        */
 
         const vessel = {
 
@@ -450,12 +481,6 @@ class VesselRiskEngine {
         };
 
 
-        /*
-        =======================================================
-        AIS Destination Intelligence
-        =======================================================
-        */
-
         const destination =
 
         this
@@ -465,12 +490,6 @@ class VesselRiskEngine {
 
         );
 
-
-        /*
-        =======================================================
-        Planned Route Intelligence
-        =======================================================
-        */
 
         const plannedRoute =
 
@@ -482,11 +501,15 @@ class VesselRiskEngine {
         );
 
 
-        /*
-        =======================================================
-        Weather Intelligence Input
-        =======================================================
-        */
+        const normalizedCongestionRisk =
+
+        this
+        .normalizeCongestionRisk(
+
+            congestionRisk
+
+        );
+
 
         const weatherData = {
 
@@ -502,12 +525,6 @@ class VesselRiskEngine {
         };
 
 
-        /*
-        =======================================================
-        ETA Intelligence
-        =======================================================
-        */
-
         const etaAnalysis =
 
         vesselIntelligence
@@ -520,12 +537,6 @@ class VesselRiskEngine {
         );
 
 
-        /*
-        =======================================================
-        Weather Intelligence
-        =======================================================
-        */
-
         const weatherAnalysis =
 
         vesselIntelligence
@@ -536,12 +547,6 @@ class VesselRiskEngine {
         );
 
 
-        /*
-        =======================================================
-        Fuel Intelligence
-        =======================================================
-        */
-
         const fuelAnalysis =
 
         vesselIntelligence
@@ -551,12 +556,6 @@ class VesselRiskEngine {
 
         );
 
-
-        /*
-        =======================================================
-        Route Deviation Intelligence
-        =======================================================
-        */
 
         let routeAnalysis = {
 
@@ -604,12 +603,6 @@ class VesselRiskEngine {
         }
 
 
-        /*
-        =======================================================
-        Voyage Risk Intelligence
-        =======================================================
-        */
-
         const voyageRisk =
 
         riskEngine
@@ -629,7 +622,7 @@ class VesselRiskEngine {
 
             congestionRisk:
 
-            'LOW',
+            normalizedCongestionRisk,
 
 
             routeDeviation:
@@ -639,12 +632,6 @@ class VesselRiskEngine {
 
         });
 
-
-        /*
-        =======================================================
-        Intelligence Logging
-        =======================================================
-        */
 
         console.log(
 
@@ -660,6 +647,15 @@ class VesselRiskEngine {
             'FUEL:',
 
             fuelAnalysis
+
+        );
+
+
+        console.log(
+
+            'CONGESTION:',
+
+            normalizedCongestionRisk
 
         );
 
@@ -682,12 +678,6 @@ class VesselRiskEngine {
         );
 
 
-        /*
-        =======================================================
-        Vessel Risk Response
-        =======================================================
-        */
-
         return {
 
             vessel:
@@ -704,6 +694,11 @@ class VesselRiskEngine {
             aisSpeed:
 
             vessel.speed,
+
+
+            congestionRisk:
+
+            normalizedCongestionRisk,
 
 
             etaAnalysis,
