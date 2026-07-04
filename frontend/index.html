@@ -1,318 +1,1251 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-/>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>
-Enterprise Maritime AI Intelligence Platform
-</title>
+    <title>
+        Enterprise Maritime AI Intelligence Platform
+    </title>
 
-<style>
 
-body{
-margin:0;
-padding:0;
-background:#081120;
-color:white;
-font-family:Arial,sans-serif;
-}
+    <!-- =========================================================
+         LEAFLET MAP
+    ========================================================== -->
 
-header{
-background:#0f172a;
-padding:20px;
-border-bottom:1px solid #1e293b;
-}
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
 
-h1{
-margin:0;
-text-align:center;
-}
 
-.sub-title{
-text-align:center;
-margin-top:10px;
-color:#10b981;
-}
+    <style>
 
-.container{
-padding:20px;
-max-width:1450px;
-margin:auto;
-}
+        /*
+        ===========================================================
+        GLOBAL
+        ===========================================================
+        */
 
-.auth-box{
-max-width:400px;
-margin:80px auto;
-background:#111827;
-padding:30px;
-border-radius:10px;
-}
+        * {
 
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-margin-bottom:20px;
-border-radius:6px;
-border:none;
-background:#1f2937;
-color:white;
-box-sizing:border-box;
-}
+            box-sizing: border-box;
 
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:6px;
-background:#2563eb;
-color:white;
-font-weight:bold;
-cursor:pointer;
-margin-top:10px;
-}
+        }
 
-button:hover{
-background:#1d4ed8;
-}
 
-.dashboard-grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(220px,280px));
-gap:15px;
-margin-top:20px;
-}
+        body {
 
-.card{
-background:#111827;
-border:1px solid #1e293b;
-border-radius:10px;
-padding:15px;
-}
+            margin: 0;
 
-.section-title{
-margin-top:40px;
-margin-bottom:15px;
-font-size:24px;
-}
+            background: #020617;
 
-.table-container{
-overflow-x:auto;
-margin-top:20px;
-}
+            color: #e2e8f0;
 
-table{
-width:100%;
-border-collapse:collapse;
-background:#111827;
-}
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
-th{
-background:#1e293b;
-padding:14px;
-text-align:left;
-}
+        }
 
-td{
-padding:14px;
-border-top:1px solid #1f2937;
-}
 
-tr:hover{
-background:#172033;
-}
+        button,
+        input {
 
-.alert-grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(250px,350px));
-gap:15px;
-margin-top:20px;
-}
+            font: inherit;
 
-.alert-card-medium{
-background:#3a2b10;
-border:1px solid #f59e0b;
-padding:20px;
-border-radius:10px;
-}
+        }
 
-.live-indicator{
-width:10px;
-height:10px;
-background:#10b981;
-display:inline-block;
-border-radius:50%;
-margin-right:8px;
-}
 
-.stream-panel{
-background:#111827;
-border:1px solid #1e293b;
-border-radius:10px;
-padding:20px;
-margin-top:20px;
-max-height:300px;
-overflow-y:auto;
-}
+        /*
+        ===========================================================
+        HEADER
+        ===========================================================
+        */
 
-.stream-item{
-padding:12px;
-margin-bottom:10px;
-background:#172033;
-border-left:4px solid #2563eb;
-}
+        header {
 
-.stream-time{
-font-size:12px;
-color:#94a3b8;
-margin-bottom:5px;
-}
+            background: #0f172a;
 
-</style>
+            border-bottom:
+                1px solid #1e293b;
+
+            padding: 24px 30px;
+
+        }
+
+
+        header h1 {
+
+            margin: 0;
+
+            font-size: 28px;
+
+        }
+
+
+        .sub-title {
+
+            margin-top: 10px;
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+        }
+
+
+        .live-indicator {
+
+            width: 10px;
+
+            height: 10px;
+
+            background: #10b981;
+
+            display: inline-block;
+
+            border-radius: 50%;
+
+            margin-right: 8px;
+
+        }
+
+
+        /*
+        ===========================================================
+        MAIN CONTAINER
+        ===========================================================
+        */
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1700px;
+
+            margin: auto;
+
+            padding: 30px 0 60px 0;
+
+        }
+
+
+        /*
+        ===========================================================
+        AUTHENTICATION
+        ===========================================================
+        */
+
+        .auth-box {
+
+            max-width: 420px;
+
+            margin: 70px auto;
+
+            background: #111827;
+
+            border:
+                1px solid #1e293b;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+        }
+
+
+        .auth-box h2 {
+
+            margin-top: 0;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .auth-box input {
+
+            width: 100%;
+
+            background: #0f172a;
+
+            color: #e2e8f0;
+
+            border:
+                1px solid #334155;
+
+            border-radius: 7px;
+
+            padding: 13px;
+
+            margin-bottom: 15px;
+
+            outline: none;
+
+        }
+
+
+        .auth-box input:focus {
+
+            border-color: #2563eb;
+
+        }
+
+
+        .auth-box button {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+        }
+
+
+        .auth-box button:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        /*
+        ===========================================================
+        DASHBOARD GRID
+        ===========================================================
+        */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 18px;
+
+            margin-top: 20px;
+
+        }
+
+
+        .card {
+
+            background: #111827;
+
+            border:
+                1px solid #1e293b;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+        }
+
+
+        .card h3 {
+
+            margin-top: 0;
+
+            color: #cbd5e1;
+
+        }
+
+
+        .card h2 {
+
+            margin-bottom: 0;
+
+        }
+
+
+        /*
+        ===========================================================
+        SECTION TITLE
+        ===========================================================
+        */
+
+        .section-title {
+
+            margin-top: 42px;
+
+            margin-bottom: 15px;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+        }
+
+
+        /*
+        ===========================================================
+        GLOBAL MARITIME SITUATION
+        ===========================================================
+        */
+
+        .maritime-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 2fr)
+                minmax(300px, 1fr);
+
+            gap: 20px;
+
+            align-items: start;
+
+        }
+
+
+        .map-card {
+
+            min-width: 0;
+
+        }
+
+
+        #worldMap {
+
+            height: 550px;
+
+            width: 100%;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            margin-top: 15px;
+
+        }
+
+
+        .executive-panel {
+
+            min-width: 0;
+
+        }
+
+
+        /*
+        ===========================================================
+        TABLE
+        ===========================================================
+        */
+
+        .table-container {
+
+            overflow-x: auto;
+
+            margin-top: 20px;
+
+            border-radius: 10px;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            background: #111827;
+
+        }
+
+
+        th {
+
+            background: #1e293b;
+
+            padding: 14px;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+        }
+
+
+        td {
+
+            padding: 14px;
+
+            border-top:
+                1px solid #1f2937;
+
+        }
+
+
+        tbody tr {
+
+            cursor: pointer;
+
+        }
+
+
+        tbody tr:hover {
+
+            background: #172033;
+
+        }
+
+
+        /*
+        ===========================================================
+        STATUS
+        ===========================================================
+        */
+
+        .status-good {
+
+            color: #10b981;
+
+        }
+
+
+        .status-medium {
+
+            color: #f59e0b;
+
+        }
+
+
+        .status-high {
+
+            color: #ef4444;
+
+        }
+
+
+        /*
+        ===========================================================
+        ALERTS
+        ===========================================================
+        */
+
+        .alert-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(250px, 1fr)
+                );
+
+            gap: 15px;
+
+            margin-top: 15px;
+
+        }
+
+
+        .alert-card-high {
+
+            background: #3f1010;
+
+            border:
+                1px solid #ef4444;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+        }
+
+
+        .alert-card-medium {
+
+            background: #3a2b10;
+
+            border:
+                1px solid #f59e0b;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+        }
+
+
+        .alert-card-low {
+
+            background: #10281b;
+
+            border:
+                1px solid #10b981;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+        }
+
+
+        /*
+        ===========================================================
+        INTELLIGENCE STREAM
+        ===========================================================
+        */
+
+        .stream-panel {
+
+            background: #111827;
+
+            border:
+                1px solid #1e293b;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin-top: 20px;
+
+            max-height: 350px;
+
+            overflow-y: auto;
+
+        }
+
+
+        .stream-item {
+
+            padding: 12px;
+
+            margin-bottom: 10px;
+
+            background: #172033;
+
+            border-left:
+                4px solid #2563eb;
+
+        }
+
+
+        .stream-item:last-child {
+
+            margin-bottom: 0;
+
+        }
+
+
+        .stream-time {
+
+            font-size: 12px;
+
+            color: #94a3b8;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        /*
+        ===========================================================
+        SHIP MARKER
+        ===========================================================
+        */
+
+        .ship-marker {
+
+            font-size: 22px;
+
+            text-align: center;
+
+            background: transparent;
+
+            border: none;
+
+        }
+
+
+        /*
+        ===========================================================
+        FOOTER ACTIONS
+        ===========================================================
+        */
+
+        .platform-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            margin-top: 35px;
+
+        }
+
+
+        .logout-button {
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #b91c1c;
+
+            color: white;
+
+            padding: 11px 20px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+        }
+
+
+        .logout-button:hover {
+
+            background: #991b1b;
+
+        }
+
+
+        /*
+        ===========================================================
+        RESPONSIVE
+        ===========================================================
+        */
+
+        @media (
+            max-width: 1000px
+        ) {
+
+            .maritime-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (
+            max-width: 600px
+        ) {
+
+            header {
+
+                padding:
+                    20px 18px;
+
+            }
+
+
+            header h1 {
+
+                font-size: 22px;
+
+            }
+
+
+            .container {
+
+                width: 92%;
+
+            }
+
+
+            #worldMap {
+
+                height: 420px;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-<header>
 
-<h1>
-Enterprise Maritime AI Intelligence Platform
-</h1>
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
 
-<div class="sub-title">
-<span class="live-indicator"></span>
-Live Operational Maritime Intelligence System
-</div>
+    <header>
 
-</header>
+        <h1>
 
-<div class="container">
+            Enterprise Maritime AI Intelligence Platform
 
-<div
-id="authSection"
-class="auth-box"
->
+        </h1>
 
-<h2>
-Enterprise Login
-</h2>
 
-<input
-type="text"
-id="username"
-placeholder="Username"
-/>
+        <div class="sub-title">
 
-<input
-type="password"
-id="password"
-placeholder="Password"
-/>
+            <span class="live-indicator"></span>
 
-<button onclick="login()">
-Login
-</button>
+            Live Operational Maritime Intelligence System
 
-</div>
+        </div>
 
-<div
-id="dashboardSection"
-style="display:none;"
->
+    </header>
 
-<h2>
-Operational Dashboard
-</h2>
 
-<div
-id="dashboardData"
-class="dashboard-grid"
-></div>
+    <!-- =========================================================
+         MAIN CONTAINER
+    ========================================================== -->
 
-<div class="section-title">
-Enterprise Intelligence Metrics
-</div>
+    <div class="container">
 
-<div
-id="enterpriseMetrics"
-class="dashboard-grid"
-></div>
 
-<div class="section-title">
-Operational Alerts
-</div>
+        <!-- =====================================================
+             LOGIN
+        ====================================================== -->
 
-<div
-id="operationalAlerts"
-class="alert-grid"
-></div>
+        <div
+            id="authSection"
+            class="auth-box"
+        >
 
-<div class="section-title">
-Live Intelligence Stream
-</div>
+            <h2>
 
-<div
-id="liveStreamPanel"
-class="stream-panel"
-></div>
+                Enterprise Login
 
-<div class="section-title">
-Historical Intelligence Logs
-</div>
+            </h2>
 
-<div
-id="historyLogs"
-class="stream-panel"
-></div>
 
-<div class="section-title">
-Enterprise Fleet Intelligence
-</div>
+            <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                autocomplete="username"
+            >
 
-<div class="table-container">
 
-<table>
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
 
-<thead>
 
-<tr>
+            <button
+                type="button"
+                onclick="Auth.login()"
+            >
 
-<th>Vessel</th>
-<th>Type</th>
-<th>Speed</th>
-<th>Destination</th>
-<th>ETA</th>
-<th>Provider</th>
-<th>Status</th>
+                Login
 
-</tr>
+            </button>
 
-</thead>
+        </div>
 
-<tbody id="fleetTableBody">
-</tbody>
 
-</table>
+        <!-- =====================================================
+             DASHBOARD
+        ====================================================== -->
 
-</div>
+        <div
+            id="dashboardSection"
+            style="display: none;"
+        >
 
-</div>
 
-</div>
+            <h2>
 
-<script src="/socket.io/socket.io.js"></script>
+                Executive Command Center
 
-<script src="./app.js"></script>
+            </h2>
+
+
+            <!-- =================================================
+                 PLATFORM HEALTH
+            ================================================== -->
+
+            <div
+                id="dashboardData"
+                class="dashboard-grid"
+            >
+
+                <div class="card">
+
+                    <h3>
+                        Platform
+                    </h3>
+
+                    <h2>
+                        INITIALIZING
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 EXECUTIVE KPIs
+            ================================================== -->
+
+            <div class="section-title">
+
+                Executive KPIs
+
+            </div>
+
+
+            <div
+                id="enterpriseMetrics"
+                class="dashboard-grid"
+            >
+
+                <div class="card">
+
+                    Loading enterprise intelligence...
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 GLOBAL MARITIME SITUATION
+            ================================================== -->
+
+            <div class="section-title">
+
+                Global Maritime Situation
+
+            </div>
+
+
+            <div class="maritime-layout">
+
+
+                <!-- =============================================
+                     MAP AND FLEET COUNTERS
+                ============================================== -->
+
+                <div class="card map-card">
+
+
+                    <div class="dashboard-grid">
+
+
+                        <div class="card">
+
+                            <h3>
+                                🚢 Live Vessels
+                            </h3>
+
+                            <h2 id="liveVesselCount">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+
+                        <div class="card">
+
+                            <h3>
+                                ⚓ Moving
+                            </h3>
+
+                            <h2 id="movingVessels">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+
+                        <div class="card">
+
+                            <h3>
+                                🛑 Anchored
+                            </h3>
+
+                            <h2 id="anchoredVessels">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+
+                        <div class="card">
+
+                            <h3>
+                                ⚠ High Risk
+                            </h3>
+
+                            <h2 id="highRiskVessels">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <h3 style="margin-top: 25px;">
+
+                        🌍 Live World Map
+
+                    </h3>
+
+
+                    <div id="worldMap"></div>
+
+
+                </div>
+
+
+                <!-- =============================================
+                     EXECUTIVE INTELLIGENCE
+                ============================================== -->
+
+                <div class="executive-panel">
+
+
+                    <div class="card">
+
+                        <h3>
+
+                            🤖 AI Executive Summary
+
+                        </h3>
+
+
+                        <div id="executiveSummary">
+
+                            Waiting for AI intelligence...
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="card"
+                        style="margin-top: 15px;"
+                    >
+
+                        <h3>
+
+                            ⚠ Executive Alerts
+
+                        </h3>
+
+
+                        <div
+                            id="operationalAlerts"
+                            class="alert-grid"
+                        >
+
+                            <div class="alert-card-medium">
+
+                                Loading operational intelligence...
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 FLEET INTELLIGENCE
+            ================================================== -->
+
+            <div class="section-title">
+
+                Enterprise Fleet Intelligence
+
+            </div>
+
+
+            <div class="table-container">
+
+
+                <table>
+
+
+                    <thead>
+
+
+                        <tr>
+
+                            <th>
+                                Vessel
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Speed
+                            </th>
+
+                            <th>
+                                Destination
+                            </th>
+
+                            <th>
+                                ETA
+                            </th>
+
+                            <th>
+                                Provider
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+
+                    </thead>
+
+
+                    <tbody id="fleetTableBody">
+
+
+                        <tr>
+
+                            <td colspan="7">
+
+                                Waiting for vessel intelligence...
+
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 LIVE INTELLIGENCE
+            ================================================== -->
+
+            <div class="section-title">
+
+                Live Intelligence Stream
+
+            </div>
+
+
+            <div
+                id="liveStreamPanel"
+                class="stream-panel"
+            >
+
+
+                <div class="stream-item">
+
+
+                    <div class="stream-time">
+
+                        System Startup
+
+                    </div>
+
+
+                    Maritime AI Intelligence Stream Initialized
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 HISTORICAL INTELLIGENCE
+            ================================================== -->
+
+            <div class="section-title">
+
+                Historical Intelligence Logs
+
+            </div>
+
+
+            <div
+                id="historyLogs"
+                class="stream-panel"
+            >
+
+
+                <div class="stream-item">
+
+                    Waiting for intelligence history.
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 PLATFORM ACTIONS
+            ================================================== -->
+
+            <div class="platform-actions">
+
+
+                <button
+                    type="button"
+                    class="logout-button"
+                    onclick="Auth.logout()"
+                >
+
+                    Logout
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================================
+         THIRD PARTY LIBRARIES
+    ========================================================== -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
+
+    <script
+        src="/socket.io/socket.io.js"
+    ></script>
+
+
+    <!-- =========================================================
+         PLATFORM CONFIGURATION
+    ========================================================== -->
+
+    <script
+        src="./js/config.js"
+    ></script>
+
+
+    <!-- =========================================================
+         PLATFORM SERVICES
+    ========================================================== -->
+
+    <script
+        src="./js/utils.js"
+    ></script>
+
+
+    <script
+        src="./js/api.js"
+    ></script>
+
+
+    <!-- =========================================================
+         AUTHENTICATION
+    ========================================================== -->
+
+    <script
+        src="./js/auth.js"
+    ></script>
+
+
+    <!-- =========================================================
+         INTELLIGENCE MODULES
+    ========================================================== -->
+
+    <script
+        src="./js/dashboard.js"
+    ></script>
+
+
+    <script
+        src="./js/fleet.js"
+    ></script>
+
+
+    <script
+        src="./js/map.js"
+    ></script>
+
+
+    <script
+        src="./js/history.js"
+    ></script>
+
+
+    <script
+        src="./js/alerts.js"
+    ></script>
+
+
+    <script
+        src="./js/websocket.js"
+    ></script>
+
+
+    <!-- =========================================================
+         APPLICATION CONTROLLER
+    ========================================================== -->
+
+    <script
+        src="./js/app.js"
+    ></script>
+
 
 </body>
 
