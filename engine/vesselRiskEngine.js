@@ -9,6 +9,9 @@ Version : 2.2.0
 const aisProvider =
 require('../providers/aisProvider');
 
+const weatherProvider =
+require('../providers/weatherProvider');
+
 const vesselIntelligence =
 require('./vesselIntelligence');
 
@@ -511,18 +514,16 @@ class VesselRiskEngine {
         );
 
 
-        const weatherData = {
+        const weatherData =
 
-            windSpeed:
-            32,
+        await weatherProvider
+        .getCurrentWeather(
 
-            waveHeight:
-            4.5,
+            vessel.currentPosition.lat,
 
-            visibility:
-            5
+            vessel.currentPosition.lon
 
-        };
+        );
 
 
         const etaAnalysis =
