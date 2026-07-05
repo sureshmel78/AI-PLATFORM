@@ -2,7 +2,7 @@
 ===============================================================
 Enterprise Maritime AI Intelligence Platform
 Executive Dashboard Engine
-Version : 2.0.1
+Version : 2.1.0
 ===============================================================
 */
 
@@ -20,6 +20,7 @@ require('./businessIntelligenceEngine');
 
 
 class ExecutiveDashboard {
+
 
     /*
     ===============================================================
@@ -48,6 +49,29 @@ class ExecutiveDashboard {
 
         /*
         ===============================================================
+        Congestion Risk Intelligence
+        ===============================================================
+        */
+
+        const congestionRisk =
+
+        congestionIntelligence
+
+        &&
+
+        congestionIntelligence.portRisk
+
+        &&
+
+        congestionIntelligence.portRisk.riskLevel
+
+        ? congestionIntelligence.portRisk.riskLevel
+
+        : 'LOW';
+
+
+        /*
+        ===============================================================
         Vessel Risk Intelligence
         ===============================================================
         */
@@ -55,7 +79,11 @@ class ExecutiveDashboard {
         const vesselRisk =
 
         await vesselRiskEngine
-        .generateRiskAssessment();
+        .generateRiskAssessment(
+
+            congestionRisk
+
+        );
 
 
         /*
@@ -135,9 +163,7 @@ class ExecutiveDashboard {
 
         if (
 
-            congestionIntelligence
-            .portRisk
-            .riskLevel === 'HIGH'
+            congestionRisk === 'HIGH'
 
             ||
 
@@ -155,9 +181,7 @@ class ExecutiveDashboard {
 
         else if (
 
-            congestionIntelligence
-            .portRisk
-            .riskLevel === 'MEDIUM'
+            congestionRisk === 'MEDIUM'
 
             ||
 
@@ -204,11 +228,7 @@ class ExecutiveDashboard {
                 weatherRisk,
 
 
-                congestionRisk:
-
-                congestionIntelligence
-                .portRisk
-                .riskLevel,
+                congestionRisk,
 
 
                 voyageRisk:
