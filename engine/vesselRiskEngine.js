@@ -12,6 +12,9 @@ require('../providers/aisProvider');
 const weatherProvider =
 require('../providers/weatherProvider');
 
+const vesselOperationalProfileService =
+require('../services/vesselOperationalProfileService');
+
 const vesselIntelligence =
 require('./vesselIntelligence');
 
@@ -433,6 +436,13 @@ class VesselRiskEngine {
 
             )
 
+        );        const operationalProfile =
+
+        vesselOperationalProfileService
+        .getProfile(
+
+            liveVessel.imo
+
         );
 
 
@@ -474,12 +484,12 @@ class VesselRiskEngine {
 
             fuelRemaining:
 
-            400,
+            operationalProfile.fuelRemaining,
 
 
             fuelConsumptionPerDay:
 
-            60
+            operationalProfile.fuelConsumptionPerDay
 
         };
 
@@ -706,9 +716,20 @@ class VesselRiskEngine {
 
 
             weatherAnalysis,
+            fuelAnalysis: {
 
+                ...fuelAnalysis,
 
-            fuelAnalysis,
+                source:
+                operationalProfile.source,
+
+                sourceType:
+                operationalProfile.sourceType,
+
+                profileStatus:
+                operationalProfile.status
+
+            },
 
 
             routeAnalysis,
