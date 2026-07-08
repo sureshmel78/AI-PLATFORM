@@ -2,7 +2,7 @@
 ===============================================================
 Enterprise Maritime AI Intelligence Platform
 Dashboard Intelligence Module
-Version : 2.0.1
+Version : 2.1.0
 ===============================================================
 */
 
@@ -311,22 +311,22 @@ const Dashboard = {
                 "UNKNOWN"
             );
 
-        const revenueOpportunity =
+        const opportunityScore =
             Utils.safe(
-                summary.revenueOpportunityCrores,
+                summary.opportunityScore,
                 0
             );
 
-        const additionalCalls =
+        const opportunityClassification =
             Utils.safe(
-                summary.additionalCalls,
-                0
+                summary.opportunityClassification,
+                "WEAK"
             );
 
-        const transshipmentPotential =
+        const opportunityConfidence =
             Utils.safe(
-                summary.transshipmentPotential,
-                "UNKNOWN"
+                summary.opportunityConfidence,
+                0
             );
 
         container.innerHTML = `
@@ -394,11 +394,11 @@ const Dashboard = {
             <div class="card">
 
                 <h3>
-                    💰 Revenue Opportunity
+                    💡 Opportunity Score
                 </h3>
 
                 <h2>
-                    ₹ ${revenueOpportunity} Cr
+                    ${opportunityScore}
                 </h2>
 
             </div>
@@ -406,11 +406,11 @@ const Dashboard = {
             <div class="card">
 
                 <h3>
-                    🚢 Additional Calls
+                    📊 Opportunity Class
                 </h3>
 
                 <h2>
-                    ${additionalCalls}
+                    ${opportunityClassification}
                 </h2>
 
             </div>
@@ -418,11 +418,11 @@ const Dashboard = {
             <div class="card">
 
                 <h3>
-                    🎯 Transshipment
+                    🎯 Confidence
                 </h3>
 
                 <h2>
-                    ${transshipmentPotential}
+                    ${opportunityConfidence}%
                 </h2>
 
             </div>
@@ -459,22 +459,22 @@ const Dashboard = {
                 "UNKNOWN"
             );
 
-        const revenueOpportunity =
+        const opportunityScore =
             Utils.safe(
-                summary.revenueOpportunityCrores,
+                summary.opportunityScore,
                 0
             );
 
-        const additionalCalls =
+        const opportunityClassification =
             Utils.safe(
-                summary.additionalCalls,
-                0
+                summary.opportunityClassification,
+                "WEAK"
             );
 
-        const transshipmentPotential =
+        const recommendedAction =
             Utils.safe(
-                summary.transshipmentPotential,
-                "UNKNOWN"
+                summary.recommendedAction,
+                "NO ACTION"
             );
 
         const highestRiskPort =
@@ -502,26 +502,26 @@ const Dashboard = {
                     <br><br>
 
                     <b>
-                        Revenue Opportunity :
+                        Opportunity Score :
                     </b>
 
-                    ₹ ${revenueOpportunity} Cr
+                    ${opportunityScore}
 
                     <br><br>
 
                     <b>
-                        Additional Vessel Calls :
+                        Opportunity Classification :
                     </b>
 
-                    ${additionalCalls}
+                    ${opportunityClassification}
 
                     <br><br>
 
                     <b>
-                        Transshipment Potential :
+                        Recommended Action :
                     </b>
 
-                    ${transshipmentPotential}
+                    ${recommendedAction}
 
                     <br><br>
 
