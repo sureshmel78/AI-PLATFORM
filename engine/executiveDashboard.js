@@ -2,29 +2,82 @@
 ===============================================================
 Enterprise Maritime AI Intelligence Platform
 Executive Dashboard Engine
-Version : 2.1.0
+Version : 2.2.0
+===============================================================
+
+PURPOSE
+---------------------------------------------------------------
+Enterprise executive dashboard intelligence aggregation.
+
+INTEGRATIONS
+---------------------------------------------------------------
+1. Enterprise Feed Gateway
+2. Congestion Intelligence Engine
+3. Vessel Risk Engine
+4. Business Intelligence Engine v2.0.0
+5. Market Opportunity Engine v2.0.0 through Business Intelligence
+
+FROZEN MODULE RULE
+---------------------------------------------------------------
+Verified dependency modules must not be modified.
+Dashboard compatibility is handled inside this engine.
 ===============================================================
 */
 
 const gateway =
-require('../feeds/gateway');
+require("../feeds/gateway");
 
 const congestionEngine =
-require('./congestionEngine');
+require("./congestionEngine");
 
 const vesselRiskEngine =
-require('./vesselRiskEngine');
+require("./vesselRiskEngine");
 
 const businessIntelligenceEngine =
-require('./businessIntelligenceEngine');
+require("./businessIntelligenceEngine");
 
 
 class ExecutiveDashboard {
 
 
+    constructor() {
+
+        this.name =
+        "ExecutiveDashboard";
+
+        this.version =
+        "2.2.0";
+
+        this.status =
+        "ACTIVE";
+
+    }
+
+
     /*
     ===============================================================
-    Generate Executive Dashboard
+    SAFE VALUE
+    ===============================================================
+    */
+
+    safeValue(
+        value,
+        fallback
+    ) {
+
+        return value !== undefined
+        && value !== null
+
+        ? value
+
+        : fallback;
+
+    }
+
+
+    /*
+    ===============================================================
+    GENERATE EXECUTIVE DASHBOARD
     ===============================================================
     */
 
@@ -49,7 +102,42 @@ class ExecutiveDashboard {
 
         /*
         ===============================================================
-        Congestion Risk Intelligence
+        SAFE ENTERPRISE FEEDS
+        ===============================================================
+        */
+
+        const safeEnterpriseFeeds =
+
+        enterpriseFeeds
+
+        && typeof enterpriseFeeds === "object"
+
+        ? enterpriseFeeds
+
+        : {};
+
+
+        const aisFeed =
+
+        safeEnterpriseFeeds
+        .ais || {};
+
+
+        const freightFeed =
+
+        safeEnterpriseFeeds
+        .freight || {};
+
+
+        const weatherFeed =
+
+        safeEnterpriseFeeds
+        .weather || {};
+
+
+        /*
+        ===============================================================
+        CONGESTION RISK INTELLIGENCE
         ===============================================================
         */
 
@@ -57,22 +145,18 @@ class ExecutiveDashboard {
 
         congestionIntelligence
 
-        &&
+        && congestionIntelligence.portRisk
 
-        congestionIntelligence.portRisk
-
-        &&
-
-        congestionIntelligence.portRisk.riskLevel
+        && congestionIntelligence.portRisk.riskLevel
 
         ? congestionIntelligence.portRisk.riskLevel
 
-        : 'LOW';
+        : "LOW";
 
 
         /*
         ===============================================================
-        Vessel Risk Intelligence
+        VESSEL RISK INTELLIGENCE
         ===============================================================
         */
 
@@ -86,9 +170,22 @@ class ExecutiveDashboard {
         );
 
 
+        const voyageRisk =
+
+        vesselRisk
+
+        && vesselRisk.voyageRisk
+
+        && vesselRisk.voyageRisk.overallRisk
+
+        ? vesselRisk.voyageRisk.overallRisk
+
+        : "LOW";
+
+
         /*
         ===============================================================
-        Business Intelligence
+        BUSINESS INTELLIGENCE
         ===============================================================
         */
 
@@ -98,117 +195,179 @@ class ExecutiveDashboard {
         .generateBusinessIntelligence();
 
 
-        /*
-        ===============================================================
-        Safe Enterprise Feed Intelligence
-        ===============================================================
-        */
+        const businessExecutiveSummary =
 
-        const aisFeed =
+        businessIntelligence
 
-        enterpriseFeeds
-        .ais || {};
+        && businessIntelligence.executiveSummary
 
+        ? businessIntelligence.executiveSummary
 
-        const freightFeed =
-
-        enterpriseFeeds
-        .freight || {};
-
-
-        const weatherFeed =
-
-        enterpriseFeeds
-        .weather || {};
+        : {};
 
 
         /*
         ===============================================================
-        Market Sentiment
+        MARKET SENTIMENT
         ===============================================================
         */
 
         const marketSentiment =
 
-        freightFeed
-        .sentiment ||
+        freightFeed.sentiment
 
-        'STABLE';
+        || "STABLE";
 
 
         /*
         ===============================================================
-        Weather Risk
+        WEATHER RISK
         ===============================================================
         */
 
         const weatherRisk =
 
-        weatherFeed
-        .risk ||
+        weatherFeed.risk
 
-        'LOW';
+        || "LOW";
 
 
         /*
         ===============================================================
-        Overall Platform Status
+        MARKET OPPORTUNITY INTELLIGENCE
+        ===============================================================
+        */
+
+        const opportunityScore =
+
+        this.safeValue(
+
+            businessExecutiveSummary
+            .opportunityScore,
+
+            0
+
+        );
+
+
+        const opportunityClassification =
+
+        this.safeValue(
+
+            businessExecutiveSummary
+            .opportunityClassification,
+
+            "WEAK"
+
+        );
+
+
+        const recommendedAction =
+
+        this.safeValue(
+
+            businessExecutiveSummary
+            .recommendedAction,
+
+            "AVOID OPPORTUNITY"
+
+        );
+
+
+        const opportunityConfidence =
+
+        this.safeValue(
+
+            businessExecutiveSummary
+            .confidence,
+
+            0
+
+        );
+
+
+        const highestRiskPort =
+
+        this.safeValue(
+
+            businessExecutiveSummary
+            .highestRiskPort,
+
+            "NONE"
+
+        );
+
+
+        /*
+        ===============================================================
+        OVERALL PLATFORM STATUS
         ===============================================================
         */
 
         let overallStatus =
 
-        'GREEN';
+        "GREEN";
 
 
         if (
 
-            congestionRisk === 'HIGH'
+            congestionRisk === "HIGH"
 
             ||
 
-            vesselRisk
-            .voyageRisk
-            .overallRisk === 'HIGH'
+            voyageRisk === "HIGH"
 
         ) {
 
             overallStatus =
 
-            'RED';
+            "RED";
 
         }
 
         else if (
 
-            congestionRisk === 'MEDIUM'
+            congestionRisk === "MEDIUM"
 
             ||
 
-            vesselRisk
-            .voyageRisk
-            .overallRisk === 'MEDIUM'
+            voyageRisk === "MEDIUM"
 
         ) {
 
             overallStatus =
 
-            'AMBER';
+            "AMBER";
 
         }
 
 
         /*
         ===============================================================
-        Executive Dashboard Response
+        EXECUTIVE DASHBOARD RESPONSE
         ===============================================================
         */
 
         return {
 
+            engine:
+
+            this.name,
+
+
+            version:
+
+            this.version,
+
+
+            status:
+
+            this.status,
+
+
             platform:
 
-            'Enterprise Maritime AI Intelligence Platform',
+            "Enterprise Maritime AI Intelligence Platform",
 
 
             overallStatus,
@@ -216,10 +375,16 @@ class ExecutiveDashboard {
 
             executiveSummary: {
 
+
                 activeVessels:
 
-                aisFeed
-                .activeVessels || 0,
+                this.safeValue(
+
+                    aisFeed.activeVessels,
+
+                    0
+
+                ),
 
 
                 marketSentiment,
@@ -231,41 +396,30 @@ class ExecutiveDashboard {
                 congestionRisk,
 
 
-                voyageRisk:
-
-                vesselRisk
-                .voyageRisk
-                .overallRisk,
+                voyageRisk,
 
 
-                revenueOpportunityCrores:
-
-                businessIntelligence
-                .executiveSummary
-                .revenueOpportunityCrores,
+                opportunityScore,
 
 
-                additionalCalls:
-
-                businessIntelligence
-                .executiveSummary
-                .additionalCalls,
+                opportunityClassification,
 
 
-                transshipmentPotential:
-
-                businessIntelligence
-                .executiveSummary
-                .transshipmentPotential,
+                recommendedAction,
 
 
-                highestRiskPort:
+                opportunityConfidence,
 
-                businessIntelligence
-                .executiveSummary
-                .highestRiskPort
+
+                highestRiskPort
 
             },
+
+
+            marketOpportunity:
+
+            businessIntelligence
+            .marketOpportunity || null,
 
 
             congestionIntelligence,
@@ -281,6 +435,47 @@ class ExecutiveDashboard {
 
             new Date()
             .toISOString()
+
+        };
+
+    }
+
+
+    /*
+    ===============================================================
+    ENGINE INFORMATION
+    ===============================================================
+    */
+
+    getEngineInfo() {
+
+        return {
+
+            name:
+
+            this.name,
+
+            version:
+
+            this.version,
+
+            status:
+
+            this.status,
+
+            integrations: [
+
+                "EnterpriseFeedGateway",
+
+                "CongestionEngine",
+
+                "VesselRiskEngine",
+
+                "BusinessIntelligenceEngine v2.0.0",
+
+                "MarketOpportunityEngine v2.0.0"
+
+            ]
 
         };
 
