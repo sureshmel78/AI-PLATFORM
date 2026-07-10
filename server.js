@@ -1027,6 +1027,9 @@ SERVER
 aisCacheService
 .start();
 
+aisStreamService
+.start();
+
 
 server.listen(
 
