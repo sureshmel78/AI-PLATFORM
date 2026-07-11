@@ -23,6 +23,9 @@ require('./engine/vesselIntelligence');
 const aisCacheService =
 require('./services/aisCacheService');
 
+const aisStreamService =
+require('./services/aisStreamService');
+
 const express =
 require('express');
 
@@ -518,6 +521,37 @@ app.get(
 
             version:
             '10.1.1'
+
+        });
+
+    }
+
+);
+
+
+/*
+===============================================================
+AISSTREAM PUBLIC STATUS
+===============================================================
+*/
+
+app.get(
+
+    '/api/public/ais/status',
+
+    (
+        req,
+        res
+    ) => {
+
+        return res.json({
+
+            success:
+            true,
+
+            data:
+            aisStreamService
+            .getStatus()
 
         });
 
