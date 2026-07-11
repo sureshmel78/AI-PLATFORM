@@ -12,6 +12,10 @@ class MockWebSocket {
     MockWebSocket.instance = this;
   }
 
+  on(name, callback) {
+    this.listeners[name] = callback;
+  }
+
   addEventListener(name, callback) {
     this.listeners[name] = callback;
   }

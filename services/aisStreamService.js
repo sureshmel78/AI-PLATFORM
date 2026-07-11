@@ -25,7 +25,14 @@ class AISStreamService {
     this.WebSocketImpl = null;
   }
 
-  start(WebSocketImpl = globalThis.WebSocket) {
+  start(WebSocketImpl = null) {
+    if (!WebSocketImpl) {
+      try {
+        WebSocketImpl = require("ws");
+      } catch (error) {
+        this.lastError = `WEBSOCKET_LIBRARY_UNAVAILABLE: ${error.message}`;
+      }
+    }
     if (this.started) return this.getStatus();
     this.started = true;
     this.WebSocketImpl = WebSocketImpl;
@@ -54,7 +61,7 @@ class AISStreamService {
       const socket = new this.WebSocketImpl(this.url);
       this.socket = socket;
 
-      socket.addEventListener("open", () => {
+      this.bind(socket, "open", () => {
         if (socket !== this.socket) return;
         this.connected = true;
         this.lastError = null;
@@ -72,22 +79,25 @@ class AISStreamService {
         console.log("AISStream Service Connected and Subscribed");
       });
 
-      socket.addEventListener("message", event => {
+      this.bind(socket, "message", data => {
         if (socket !== this.socket) return;
-        this.handleMessage(event.data);
+        this.handleMessage(data?.data ?? data);
       });
 
-      socket.addEventListener("error", event => {
+      this.bind(socket, "error", error => {
         if (socket !== this.socket) return;
-        this.lastError = event?.message || "AISSTREAM_SOCKET_ERROR";
+        this.lastError = `AISSTREAM_SOCKET_ERROR: ${error?.message || error?.code || "UNKNOWN"}`;
         console.error("AISStream Service Error:", this.lastError);
       });
 
-      socket.addEventListener("close", () => {
+      this.bind(socket, "close", (code, reason) => {
         if (socket !== this.socket) return;
         this.connected = false;
         this.subscribed = false;
         this.socket = null;
+        const reasonText = Buffer.isBuffer(reason) ? reason.toString("utf8") : String(reason || "");
+        this.lastError = `AISSTREAM_CLOSED: code=${code ?? "UNKNOWN"}${reasonText ? ` reason=${reasonText}` : ""}`;
+        console.error("AISStream Service Closed:", this.lastError);
         if (this.started) this.scheduleReconnect();
       });
     } catch (error) {
@@ -96,6 +106,18 @@ class AISStreamService {
       this.subscribed = false;
       this.scheduleReconnect();
     }
+  }
+
+  bind(socket, eventName, handler) {
+    if (socket && typeof socket.on === "function") {
+      socket.on(eventName, handler);
+      return;
+    }
+    if (socket && typeof socket.addEventListener === "function") {
+      socket.addEventListener(eventName, handler);
+      return;
+    }
+    throw new Error(`WEBSOCKET_EVENT_BINDING_UNAVAILABLE: ${eventName}`);
   }
 
   handleMessage(raw) {
