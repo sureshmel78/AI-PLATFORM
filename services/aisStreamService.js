@@ -1,19 +1,23 @@
 /* ===============================================================
 Enterprise Maritime AI Intelligence Platform
 AISStream Live Ingestion Service
-Version : 1.0.0
+Version : 1.0.3
 =============================================================== */
 
 class AISStreamService {
   constructor() {
     this.name = "AISStreamService";
-    this.version = "1.0.0";
+    this.version = "1.0.3";
     this.url = process.env.AISSTREAM_URL || "wss://stream.aisstream.io/v0/stream";
     this.apiKey = process.env.AISSTREAM_API_KEY || "";
     this.boundingBoxes = this.parseBoundingBoxes(process.env.AISSTREAM_BOUNDING_BOXES);
     this.maxVessels = this.toPositiveNumber(process.env.AISSTREAM_MAX_VESSELS, 5000);
     this.staleMs = this.toPositiveNumber(process.env.AISSTREAM_STALE_MS, 900000);
     this.reconnectMs = this.toPositiveNumber(process.env.AISSTREAM_RECONNECT_MS, 15000);
+    this.maxReconnectMs = this.toPositiveNumber(process.env.AISSTREAM_MAX_RECONNECT_MS, 900000);
+    this.reconnectAttempt = 0;
+    this.retryAfterMs = null;
+    this.rateLimited = false;
     this.vessels = new Map();
     this.socket = null;
     this.started = false;
@@ -65,6 +69,9 @@ class AISStreamService {
         if (socket !== this.socket) return;
         this.connected = true;
         this.lastError = null;
+        this.reconnectAttempt = 0;
+        this.retryAfterMs = null;
+        this.rateLimited = false;
         socket.send(JSON.stringify({
           APIKey: this.apiKey,
           BoundingBoxes: this.boundingBoxes,
@@ -86,7 +93,10 @@ class AISStreamService {
 
       this.bind(socket, "error", error => {
         if (socket !== this.socket) return;
-        this.lastError = `AISSTREAM_SOCKET_ERROR: ${error?.message || error?.code || "UNKNOWN"}`;
+        const errorMessage = error?.message || error?.code || "UNKNOWN";
+        this.rateLimited = this.isRateLimitError(error);
+        this.retryAfterMs = this.extractRetryAfterMs(error);
+        this.lastError = `AISSTREAM_SOCKET_ERROR: ${errorMessage}`;
         console.error("AISStream Service Error:", this.lastError);
       });
 
@@ -96,8 +106,9 @@ class AISStreamService {
         this.subscribed = false;
         this.socket = null;
         const reasonText = Buffer.isBuffer(reason) ? reason.toString("utf8") : String(reason || "");
-        this.lastError = `AISSTREAM_CLOSED: code=${code ?? "UNKNOWN"}${reasonText ? ` reason=${reasonText}` : ""}`;
-        console.error("AISStream Service Closed:", this.lastError);
+        const closeError = `AISSTREAM_CLOSED: code=${code ?? "UNKNOWN"}${reasonText ? ` reason=${reasonText}` : ""}`;
+        if (!this.rateLimited) this.lastError = closeError;
+        console.error("AISStream Service Closed:", closeError);
         if (this.started) this.scheduleReconnect();
       });
     } catch (error) {
@@ -217,6 +228,9 @@ class AISStreamService {
       lastMessageAt: this.lastMessageAt,
       lastError: this.lastError,
       provider: "AISSTREAM",
+      reconnectAttempt: this.reconnectAttempt,
+      rateLimited: this.rateLimited,
+      retryAfterMs: this.retryAfterMs,
       status: vesselCount > 0 ? "LIVE" : this.connected ? "CONNECTED_WAITING_FOR_DATA" : "FALLBACK_ACTIVE"
     };
   }
@@ -232,11 +246,50 @@ class AISStreamService {
 
   scheduleReconnect() {
     if (!this.started || this.reconnectTimer) return;
+
+    this.reconnectAttempt += 1;
+    const exponentialDelay = Math.min(
+      this.reconnectMs * Math.pow(2, Math.max(0, this.reconnectAttempt - 1)),
+      this.maxReconnectMs
+    );
+    const delay = Math.min(
+      Math.max(exponentialDelay, this.retryAfterMs || 0),
+      this.maxReconnectMs
+    );
+
+    console.log(
+      `AISStream Service Reconnect Scheduled: attempt=${this.reconnectAttempt} delayMs=${delay}` +
+      (this.rateLimited ? " reason=RATE_LIMITED" : "")
+    );
+
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       this.connect();
-    }, this.reconnectMs);
-    if (this.reconnectTimer && typeof this.reconnectTimer.unref === "function") this.reconnectTimer.unref();
+    }, delay);
+
+    if (this.reconnectTimer && typeof this.reconnectTimer.unref === "function") {
+      this.reconnectTimer.unref();
+    }
+  }
+
+  isRateLimitError(error) {
+    const message = String(error?.message || error?.code || "");
+    return /(?:^|\D)429(?:\D|$)/.test(message);
+  }
+
+  extractRetryAfterMs(error) {
+    const retryAfter = error?.response?.headers?.["retry-after"] ??
+      error?.headers?.["retry-after"];
+
+    if (retryAfter === null || retryAfter === undefined || retryAfter === "") return null;
+
+    const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds) && seconds >= 0) return seconds * 1000;
+
+    const retryDate = new Date(retryAfter).getTime();
+    if (!Number.isFinite(retryDate)) return null;
+
+    return Math.max(0, retryDate - Date.now());
   }
 
   clearReconnect() {
