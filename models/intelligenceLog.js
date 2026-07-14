@@ -1,119 +1,227 @@
-const mongoose=require('mongoose');
-
-const intelligenceLogSchema=
-
-new mongoose.Schema({
-
-category:{
-
-type:String,
-
-required:true
-
-},
-
-severity:{
-
-type:String,
-
-default:'LOW'
-
-},
-
-source:{
-
-type:String,
-
-default:'SYSTEM'
-
-},
-
-message:{
-
-type:String,
-
-required:true
-
-},
-
 /*
-====================================================
-AUDIT
-====================================================
+===============================================================
+Enterprise Maritime AI Intelligence Platform
+Intelligence Log Model
+Version : 2.0.0
+===============================================================
 */
 
-username:{
+const mongoose =
+require("mongoose");
 
-type:String,
 
-default:'SYSTEM'
+const intelligenceLogSchema =
+new mongoose.Schema(
 
-},
+    {
 
-role:{
+        category: {
 
-type:String,
+            type:
+            String,
 
-default:'SYSTEM'
+            required:
+            true,
 
-},
+            trim:
+            true,
 
-action:{
+            uppercase:
+            true,
 
-type:String,
+            index:
+            true
 
-default:'UNKNOWN'
+        },
 
-},
 
-ipAddress:{
+        severity: {
 
-type:String,
+            type:
+            String,
 
-default:'N/A'
+            default:
+            "UNKNOWN",
 
-},
+            trim:
+            true,
 
-status:{
+            uppercase:
+            true,
 
-type:String,
+            index:
+            true
 
-default:'SUCCESS'
+        },
 
-},
 
-metadata:{
+        source: {
 
-type:Object,
+            type:
+            String,
 
-default:{}
+            default:
+            "AI_ENGINE",
 
-},
+            trim:
+            true,
 
-generatedAt:{
+            uppercase:
+            true
 
-type:Date,
+        },
 
-default:Date.now
 
-}
+        message: {
 
-},
+            type:
+            String,
 
-{
+            required:
+            true,
 
-timestamps:true
+            trim:
+            true
 
-}
+        },
+
+
+        action: {
+
+            type:
+            String,
+
+            default:
+            "INTELLIGENCE_ANALYSIS",
+
+            trim:
+            true,
+
+            uppercase:
+            true
+
+        },
+
+
+        metadata: {
+
+            type:
+            mongoose.Schema.Types.Mixed,
+
+            default:
+            {}
+
+        }
+
+    },
+
+    {
+
+        timestamps:
+        true,
+
+        versionKey:
+        false
+
+    }
 
 );
 
-module.exports=
+
+/*
+===============================================================
+Indexes
+===============================================================
+*/
+
+intelligenceLogSchema.index({
+
+    createdAt:
+    -1
+
+});
+
+
+intelligenceLogSchema.index({
+
+    category:
+    1,
+
+    createdAt:
+    -1
+
+});
+
+
+intelligenceLogSchema.index({
+
+    severity:
+    1,
+
+    createdAt:
+    -1
+
+});
+
+
+/*
+===============================================================
+JSON Transformation
+===============================================================
+*/
+
+intelligenceLogSchema.set(
+
+    "toJSON",
+
+    {
+
+        transform:
+        function (
+            document,
+            returnedObject
+        ) {
+
+            returnedObject.id =
+            returnedObject._id;
+
+
+            delete returnedObject._id;
+
+
+            return returnedObject;
+
+        }
+
+    }
+
+);
+
+
+/*
+===============================================================
+Model
+===============================================================
+*/
+
+const IntelligenceLog =
+
+mongoose.models.IntelligenceLog ||
 
 mongoose.model(
 
-'IntelligenceLog',
+    "IntelligenceLog",
 
-intelligenceLogSchema
+    intelligenceLogSchema
 
 );
+
+
+/*
+===============================================================
+Export
+===============================================================
+*/
+
+module.exports =
+IntelligenceLog;
